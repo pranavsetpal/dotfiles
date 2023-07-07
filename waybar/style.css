@@ -1,7 +1,7 @@
 * {
     /* `otf-font-awesome` is required to be installed for icons */
-    font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-family: JetBrainsMono, mono, sans-serif;
+    font-size: 14px;
 }
 
 window#waybar {
@@ -107,30 +107,26 @@ button:hover {
     margin-right: 0;
 }
 
-#clock {
-    background-color: #64727D;
-}
+/* #clock { */
+/*     background-color: #64727D; */
+/* } */
 
 #battery {
-    background-color: #ffffff;
-    color: #000000;
+    color: #ffffff;
 }
 
 #battery.charging, #battery.plugged {
-    color: #ffffff;
-    background-color: #26A65B;
+    color: #26A65B;
 }
 
 @keyframes blink {
     to {
-        background-color: #ffffff;
-        color: #000000;
+        color: #ffffff;
     }
 }
 
 #battery.critical:not(.charging) {
-    background-color: #f53c3c;
-    color: #ffffff;
+    color: #f53c3c;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -143,12 +139,11 @@ label:focus {
 }
 
 #cpu {
-    background-color: #2ecc71;
-    color: #000000;
+    color: #2ecc71;
 }
 
 #memory {
-    background-color: #9b59b6;
+   color: #9b59b6;
 }
 
 #disk {
@@ -178,12 +173,11 @@ label:focus {
 }
 
 #wireplumber {
-    background-color: #fff0f5;
-    color: #000000;
+    color: #fff0f5;
 }
 
 #wireplumber.muted {
-    background-color: #f53c3c;
+  color: #f53c3c;
 }
 
 #custom-media {

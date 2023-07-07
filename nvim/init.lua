@@ -3,14 +3,14 @@ local set = vim.o
 local map = vim.keymap.set
 local hi = vim.api.nvim_set_hl
 
+
 map('', 'k', 'n')
-map('', 'K', 'N')
 map('', 'l', 'e')
 map('', 'L', 'E')
-map('', 'h', 'i')
-map('', 'H', 'I')
-map('', 'm', 'o')
-map('', 'M', 'O')
+map('', 'm', 'i')
+map('', 'M', 'I')
+map('', 'h', 'o')
+map('', 'H', 'O')
 
 map('', 'n', 'h')
 map('', 'N', 'H')
@@ -24,75 +24,71 @@ map('', 'o', 'l')
 map('', 'O', 'L')
 
 
--- vim.cmd('packadd packer.nvim')
-require('packer').startup(function(use)
-	use{'wbthomason/packer.nvim'} -- Plugin manager
+-- vim.cmd("packadd packer.nvim")
+require("packer").startup(function(use)
+	use{"wbthomason/packer.nvim"} -- Plugin manager
 
-	use{'olimorris/onedarkpro.nvim'} -- Onedark Colorscheme
-	use{'sheerun/vim-polyglot'} -- Extended syntax highlighting support
-	-- use{'nvim-treesitter/nvim-treesitter', run=':TSUpdate'} -- Better syntax highlighting
-	-- use{'vim-airline/vim-airline'} -- Better Status Line
-	-- use{'vim-airline/vim-airline-themes'} -- Status Line themes
-	-- use{
-	-- 	'nvim-tree/nvim-tree.lua',
-	-- 	requires={'nvim-tree/nvim-web-devicons'}
-	-- }
-    --
-	use{'alvan/vim-closetag'} -- Autoclose HTML tags
-	use{'raimondi/delimitmate'} -- Autoclose and manage brackets/quotes
-	use{'tpope/vim-surround'} -- Allow quickly change brackets,quotes,tags
-	use{'tomtom/tcomment_vim'} -- Comment shortcut
+	--- Visuals
+	use("navarasu/onedark.nvim") -- Onedark Colorscheme
+	use{"sheerun/vim-polyglot"} -- Extended syntax highlighting support
 
-	-- use{'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']} -- Markdown Viewer
-	-- use{'dccsillag/magma-nvim', run=':UpdateRemotePlugins'} -- Jupyter Notebook Support
-	use{'RaafatTurki/hex.nvim'} -- Hex/Binary Support
+	--- Editing
+	use{"alvan/vim-closetag"} -- Autoclose HTML tags
+	use{"raimondi/delimitmate"} -- Autoclose and manage brackets/quotes
+	use{"tpope/vim-surround"} -- Allow quickly change brackets,quotes,tags
+	use{"tomtom/tcomment_vim"} -- Comment shortcut
+
+	--- IDE
+	use{"nvim-tree/nvim-tree.lua"} -- Directory Tree
+	--
+	--
+
+	--- More than just text support
+	use{"RaafatTurki/hex.nvim"} -- Hex/Binary Support
 
 	---Lsp
-		use{'neovim/nvim-lspconfig'}
+		use{"neovim/nvim-lspconfig"}
+		use{"williamboman/mason.nvim", run=":MasonUpdate"} -- LSP Client Manager
 		-- Auto completion
-		use{'hrsh7th/nvim-cmp'}
-		use{'hrsh7th/cmp-nvim-lsp'}
-		use{'hrsh7th/cmp-path'}
-		use{'L3MON4D3/LuaSnip'}
-		use{'saadparwaiz1/cmp_luasnip'}
+		use{"hrsh7th/nvim-cmp"}
+		use{"hrsh7th/cmp-nvim-lsp"}
+		use{"hrsh7th/cmp-path"} -- Directory Support
+		use{"L3MON4D3/LuaSnip"} -- Snip Support? Not configured
+		use{"saadparwaiz1/cmp_luasnip"} -- For LuaSnip
 end)
 
 
-set.termguicolors = true
-local color = require("onedarkpro.helpers")
-require('onedarkpro').setup({
-		colors = {
-			bg = color.darken('#282c34', 16),
-			float_bg = color.darken('#282c34', 10),
-			cursorline = color.darken('#282c34', 12)
-		},
-		options = {
-			cursorline = true
-		}
-	})
-vim.cmd.colorscheme('onedark_dark')
--- let.airline_theme='minimalist'
+-- Onedark: Colorscheme
+require("onedark").setup({
+	style = "darker",
+
+	colors = {
+		bg0 = "#030508",
+		bg1 = "#0c0e13",
+		bg2 = "#141619",
+		bg3 = "#17161b",
+		bg_d = "#000000"
+	},
+})
+require("onedark").load()
 
 -- Show line numbers and highlight current line
 set.number = true
 set.relativenumber = true
 -- set.cursorline = true
 
-
 -- 0 = global
--- hi(0, "CursorLine", { bg='#050911' })
-hi(0, "CursorLineNr", { bg=color.darken('#282c34', 12), fg='#efefef' })
-hi(0, "TabLine", { fg='#a0a0a0' })
-hi(0, "TabLineSel", { fg='#e7e7e7', bg='#171717' })
---
--- nvim-tree
-let.loaded_netrw = 1
-let.loaded_netrwPlugin = 1
+-- hi(0, "CursorLine", { bg="#050911" })
+-- hi(0, "CursorLineNr", { bg=color.darken("#282c34", 12), fg="#efefef" })
+hi(0, "TabLine", { fg="#a0a0a0" })
+hi(0, "TabLineSel", { fg="#e7e7e7", bg="#171717" })
 
--- require('nvim-tree').setup()
 
--- Hex/Binary Editor
-require 'hex'.setup()
+
+require("nvim-tree").setup()
+require("mason").setup()
+require("hex").setup()
+
 
 -- Set tab length
 set.tabstop = 4
@@ -112,20 +108,18 @@ let.delimitMate_expand_space = 1
 let.delimitMate_expand_inside_quotes = 1
 
  -- Enable system clipboard with Ctrl+p/y
- map('', '<C-y>', '"+y')
- map('', '<C-p>', '"+p')
+ map('', "<C-y>", '"+y')
+ map('', "<C-p>", '"+p')
 
--- Treesitter
--- require('nvim-treesitter.configs').setup{
--- 	highlight = { enable = true }
--- }
 
 -- LSP
 local lsp = require("lspconfig")
 local cmp = require("cmp")
 
-lsp.ccls.setup{}
-lsp.pyright.setup{}
+lsp.clangd.setup{}
+lsp.ruff_lsp.setup{
+	fileitypes = { "python", "sage" }
+}
 lsp.rust_analyzer.setup{}
 
 cmp.setup({

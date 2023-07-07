@@ -27,9 +27,12 @@
 import os
 import subprocess
 
-from libqtile import bar, layout, widget, hook
+from libqtile import bar, layout, widget, hook, qtile
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+
+from libqtile.backend.wayland import InputConfig
+
 
 # from Xlib import display as xdisplay
 
@@ -83,17 +86,17 @@ def autostart():
 #     subprocess.Popen([f"{config_dir}/polybar/launch.sh"])
 
 mod = "mod4"
-terminal = "alacritty"
+terminal = "kitty"
 
 keys = [
     # App Shortcuts
     Key([mod], "w", lazy.spawn("librewolf"), desc="Open Browser"),
 
     # Screenshot
-    Key([], "Print",                lazy.spawn("maim -s -u | xclip -selection clipboard -t image/png", shell=True), desc="Copy interactive screenshot to clipboard"),
-    Key(["Shift"], "Print",         lazy.spawn("maim -s -u $HOME/media/screenshots/$(date +%Y-%m-%d_%a_%H:%M:%S).png", shell=True), desc="Save interactive screenshot"),
-    Key([mod], "Print",             lazy.spawn("maim -u | xclip -selection clipboard -t image/png", shell=True), desc="Copy monitor screenshot to clipboard"),
-    Key([mod, "Shift"], "Print",    lazy.spawn("maim -u $HOME/media/screenshots/$(date +%Y-%m-%d_%a_%H:%M:%S).png", shell=True), desc="Save monitor screenshot"),
+    Key([], "Print", lazy.spawn('grim -g "$(slurp)" - | wl-copy', shell=True), desc="Copy interactive screenshot to clipboard"),
+    Key(["Shift"], "Print", lazy.spawn('grim -g "$(slurp)" $HOME/media/screenshots/$(date +%Y-%m-%d_%a_%H:%M:%S)', shell=True), desc="Copy interactive screenshot to clipboard"),
+    Key([mod], "Print", lazy.spawn("grim - | wl-copy"), desc="Copy interactive screenshot to clipboard"),
+    Key([mod, "Shift"], "Print", lazy.spawn('grim $HOME/media/screenshots/$(date +%Y-%m-%d_%a_%H:%M:%S)', shell=True), desc="Copy interactive screenshot to clipboard"),
 
     # Volume
     Key([], "XF86AudioMute", lazy.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), desc="Toggle Speaker Mute"),
@@ -106,8 +109,8 @@ keys = [
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +1%")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 1%-")),
     #Language
-    Key([mod], "F1", lazy.spawn("xkbcomp ~/colemak.xkb $DISPLAY", shell=True), desc="Set keyboard layout to Colemak"),
-    Key([mod], "F2", lazy.spawn("setxkbmap us"), desc="Set keyboard layout to Qwerty"),
+    # Key([mod], "F1", lazy.spawn("xkbcomp ~/colemak.xkb $DISPLAY", shell=True), desc="Set keyboard layout to Colemak"),
+    # Key([mod], "F2", lazy.spawn("setxkbmap us"), desc="Set keyboard layout to Qwerty"),
 
     # Toggle Window State
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating state"),
@@ -157,10 +160,9 @@ keys = [
     # Toggle between different layouts as defined below
     Key([mod, "control"], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    # Key([mod], "space", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "space", lazy.spawn("dmenu_run -fn mono-11 -nb black"), desc="Spawn dmenu"),
+    Key([mod, "Shift"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([mod, "Shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod], "space", lazy.spawn("bemenu-run --prompt 'Run:' --line-height 26 --ch 17 --cw 1 --hp 5 --fn 'JetBrainsMono 11' --tf '#61AFEF' --hf '#61AFEF'"), desc="Spawn bemenu"),
 ]
 
 groups = [Group(i) for i in "123456789"]
@@ -316,7 +318,14 @@ reconfigure_screens = True
 auto_minimize = True
 
 # When using the Wayland backend, this can be used to configure input devices.
-wl_input_rules = None
+wl_input_rules = {
+    "type:keyboard": InputConfig(
+        kb_layout = "us,us,us",
+        kb_variant = "colemak_dh,colemak,",
+        kb_options = "grp:ctrl_space_toggle"
+    )
+}
+
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
